@@ -16,7 +16,7 @@ namespace WebAPI1990081.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<Juego>>> Get() {
-            return await dbContext.Juegos.ToListAsync();
+            return await dbContext.Juegos.Include(x=>x.plataformas).ToListAsync();
         }
 
         [HttpPost]

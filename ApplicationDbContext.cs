@@ -11,6 +11,6 @@ namespace WebAPI1990081
         }
 
         public DbSet<Juego> Juegos { get; set; } //juegos es el nombre de la tabla y tiene las propiedades de Juego
-
+        public DbSet<Plataforma> Plataforma { get; set;}
     }
 }
