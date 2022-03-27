@@ -9,10 +9,12 @@ namespace WebAPI1990081.Controllers
     public class PlataformasController: ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly ILogger<PlataformasController> log;
 
-        public PlataformasController(ApplicationDbContext context) { 
+        public PlataformasController(ApplicationDbContext context, ILogger<PlataformasController> logger) { 
         
             this.dbContext = context;
+            this.log = logger;
         }
 
         [HttpGet]
@@ -22,6 +24,7 @@ namespace WebAPI1990081.Controllers
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Plataforma>> GetById(int id) {
+            log.LogInformation("El id es: " + id); log.LogInformation("El id es: " + id);
             return await dbContext.Plataforma.FirstOrDefaultAsync(x=>x.id == id);
         }
 

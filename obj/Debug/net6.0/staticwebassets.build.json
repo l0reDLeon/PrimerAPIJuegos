@@ -1,11 +1,37 @@
 {
   "Version": 1,
-  "Hash": "Jjd22SND/MtVWLpLWZHvJ8rAqvWGmN285Ng+q3bkMXs=",
+  "Hash": "gssK0RxENrpXPxEnd5/9kZiFg3fPaZjIHFeI57/cLKw=",
   "Source": "WebAPI1990081",
   "BasePath": "_content/WebAPI1990081",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "WebAPI1990081\\wwwroot",
+      "Source": "WebAPI1990081",
+      "ContentRoot": "C:\\Users\\anton\\source\\repos\\WebAPI1990081\\WebAPI1990081\\wwwroot\\",
+      "BasePath": "_content/WebAPI1990081",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\anton\\source\\repos\\WebAPI1990081\\WebAPI1990081\\wwwroot\\ArchivoTarea1.txt",
+      "SourceId": "WebAPI1990081",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\anton\\source\\repos\\WebAPI1990081\\WebAPI1990081\\wwwroot\\",
+      "BasePath": "_content/WebAPI1990081",
+      "RelativePath": "ArchivoTarea1.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ArchivoTarea1.txt"
+    }
+  ]
 }

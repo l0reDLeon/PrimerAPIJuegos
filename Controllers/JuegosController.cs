@@ -1,26 +1,65 @@
-﻿using Microsoft.AspNetCore.Mvc;// Es parte de la herencia de abajo, el equivalente a un import en java
+﻿using Microsoft.AspNetCore.Mvc;
 using WebAPI1990081.Entidades;
 using Microsoft.EntityFrameworkCore;
+using WebAPI1990081.Services;
+using Microsoft.AspNetCore.Authorization;
+using WebAPI1990081.Filtros;
 
 namespace WebAPI1990081.Controllers
 {
-    [ApiController] //permite hacer validaciones automáticas respecto a la info recibida aquí
-    [Route("api/[controller]")] //si ponemos [controller] reemplarazá este nombre por el nombre
-                                //del controlador que se declara abajo
-    public class JuegosController : ControllerBase //heredamos un controlador base
+    [ApiController]
+    [Route("api/[controller]")] 
+    public class JuegosController : ControllerBase
     {
+        private readonly ApplicationDbContext dbContext;
+        private readonly IService service;
+        private readonly ServiceTransient serviceTransient;
+        private readonly ServiceScoped serviceScoped;
+        private readonly ServiceSingleton serviceSingleton;
+        private readonly ILogger<JuegosController> logger;
 
-        private readonly ApplicationDbContext dbContext; 
-        public JuegosController(ApplicationDbContext context)
-        {                                                       //si cambiamos los nombres del controlador
-                                                                //la ruta se modifica auto. por [controller]
+        public JuegosController(
+            ApplicationDbContext context, IService service, 
+            ServiceTransient serviceTransient, ServiceScoped serviceScoped, 
+            ServiceSingleton serviceSingleton, ILogger<JuegosController> logger)
+        {                                                       
             this.dbContext = context;
+            this.service = service;
+            this.serviceTransient = serviceTransient;
+            this.serviceScoped = serviceScoped;
+            this.serviceSingleton= serviceSingleton;
+            this.logger = logger;
+        }
+
+        [HttpGet("GUID")]
+        [ResponseCache(Duration = 10)]
+        [ServiceFilter(typeof(FiltroDeAccion))]
+        public ActionResult ObtenerGUID()
+        {
+            logger.LogInformation("Durante la ejecución del filtro.");
+            return Ok(new
+            {
+                JuegosControllerTransient = serviceTransient.guid,
+                ServiceA_Transient = service.GetTransient(),
+                JuegosControllerScoped = serviceScoped.guid,
+                ServiceA_Scoped = service.GetScoped(),
+                JuegosControllerSingleton = serviceSingleton.guid,
+                ServiceA_Singleton = service.GetSingleton()
+            });
         }
 
         [HttpGet]//api/juegos
         [HttpGet("listado")]//api/juegos/listado ("listado")
         [HttpGet("/listado")] // /listado -> localhost:puerto/listado
+        [ResponseCache(Duration = 15)]
+        //[Authorize]
         public async Task<ActionResult<List<Juego>>> Get() {
+            //critical, error, warning, information, debug, trace 
+
+            //throw new NotImplementedException();//con esto mandamos ver tooodo el log, hay otro tipo de excepciones
+            logger.LogInformation("Se obtiene el listado de alumnos");
+            logger.LogWarning("Mensaje de prueba warning");
+            service.ejecutarJob();            
             return await dbContext.Juegos.Include(x=>x.plataformas).ToListAsync();
         }
 
@@ -72,6 +111,7 @@ namespace WebAPI1990081.Controllers
             //El método contains manda a llamar a todos los registros que tengan el parámetro que le pasamos
             if (juego == null)
             {
+                logger.LogError("No se encontró el juego.");
                 return NotFound();
             }
             return juego;
@@ -110,6 +150,12 @@ namespace WebAPI1990081.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody]Juego juego)
         {
+            var existeJuego = await dbContext.Juegos.AnyAsync(x => x.nombre == juego.nombre);
+            if (existeJuego)
+            {
+                return BadRequest("Ya existe un título con el mismo nombre en el sistema");
+            }
+
             dbContext.Add(juego);
             await dbContext.SaveChangesAsync();
             return Ok();
